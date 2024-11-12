@@ -1276,6 +1276,7 @@ func (m *kubeGenericRuntimeManager) SyncPod(ctx context.Context, pod *v1.Pod, po
 			return err
 		}
 
+		klog.V(4).InfoS("Created container in pod", "containerType", typeName, "container", spec.container, "pod", klog.KObj(pod))
 		return nil
 	}
 
@@ -1327,7 +1328,6 @@ func (m *kubeGenericRuntimeManager) SyncPod(ctx context.Context, pod *v1.Pod, po
 	// Step 8: start containers in podContainerChanges.ContainersToStart.
 	for _, idx := range podContainerChanges.ContainersToStart {
 		start(ctx, "container", metrics.Container, containerStartSpec(&pod.Spec.Containers[idx]))
-		klog.V(4).InfoS("Container started", "containerName", pod.Spec.Containers[idx].Name, "pod", klog.KObj(pod))
 	}
 
 	return

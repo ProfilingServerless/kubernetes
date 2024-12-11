@@ -945,6 +945,7 @@ func (p *podWorkers) UpdatePod(options UpdatePodOptions) {
 		go func() {
 			// TODO: this should be a wait.Until with backoff to handle panics, and
 			// accept a context for shutdown
+		    klog.V(4).InfoS("Pod wokrer has started", "pod", klog.KRef(ns, name))
 			defer runtime.HandleCrash()
 			defer klog.V(3).InfoS("Pod worker has stopped", "podUID", uid)
 			p.podWorkerLoop(uid, outCh)

@@ -1847,7 +1847,8 @@ func (kl *Kubelet) SyncPod(ctx context.Context, updateType kubetypes.SyncPodType
 			kl.configMapManager.RegisterPod(pod)
 		}
 	}
-
+    
+    cgrouptStart := time.Now()
 	// Create Cgroups for the pod and apply resource parameters
 	// to them if cgroups-per-qos flag is enabled.
 	pcm := kl.containerManager.NewPodContainerManager()
@@ -1900,6 +1901,9 @@ func (kl *Kubelet) SyncPod(ctx context.Context, updateType kubetypes.SyncPodType
 			}
 		}
 	}
+    
+    klog.V(4).InfoS("Pod cgroup created", "pod", klog.KObj(pod), "duration", time.Now().Sub(cgrouptStart))
+
 
 	// Create Mirror Pod for Static Pod if it doesn't already exist
 	if kubetypes.IsStaticPod(pod) {

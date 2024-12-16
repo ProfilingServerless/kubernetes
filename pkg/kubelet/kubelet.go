@@ -1944,6 +1944,7 @@ func (kl *Kubelet) SyncPod(ctx context.Context, updateType kubetypes.SyncPodType
 	}
 
 	// Wait for volumes to attach/mount
+    vomlumeStart := time.Now()
 	if err := kl.volumeManager.WaitForAttachAndMount(ctx, pod); err != nil {
 		if !wait.Interrupted(err) {
 			kl.recorder.Eventf(pod, v1.EventTypeWarning, events.FailedMountVolume, "Unable to attach or mount volumes: %v", err)
@@ -1951,6 +1952,8 @@ func (kl *Kubelet) SyncPod(ctx context.Context, updateType kubetypes.SyncPodType
 		}
 		return false, err
 	}
+    
+    klog.V(4).InfoS("Pod volumes attached and mounted", "pod", klog.KObj(pod), "duration", time.Now().Sub(vomlumeStart))
 
 	// Fetch the pull secrets for the pod
 	pullSecrets := kl.getPullSecretsForPod(pod)
